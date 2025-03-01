@@ -1,13 +1,13 @@
-import axios from "axios";
+import { create } from "zustand";
 
-const API_URL = "http://localhost:8000"; // Adjust this based on your backend URL
-
-export const registerUser = async (userData) => {
-    const response = await axios.post(`${API_URL}/register`, userData);
-    return response.data;
-};
-
-export const loginUser = async (userData) => {
-    const response = await axios.post(`${API_URL}/login`, userData);
-    return response.data;
-};
+export const useAuthStore = create((set) => ({
+    token: localStorage.getItem("token") || null,
+    setToken: (token) => {
+        localStorage.setItem("token", token);
+        set({ token });
+    },
+    logout: () => {
+        localStorage.removeItem("token");
+        set({ token: null });
+    }
+}));
