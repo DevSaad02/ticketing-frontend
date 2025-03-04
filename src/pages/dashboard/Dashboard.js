@@ -2,8 +2,10 @@ import React from "react";
 import Header from "../../includes/Header";
 import Sidebar from "../../includes/Sidebar"; 
 import Footer from "../../includes/Footer";
-
+import { useAuthStore } from "../../store/AuthStore";
 const Dashboard = () => {
+    const token = useAuthStore.getState().token;
+    console.log("Token being sent:", token);
     return (
         <>
             <Header />

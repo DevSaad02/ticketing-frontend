@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../store/AuthStore";
 
 const API_URL = "http://localhost:8000";
 
@@ -15,4 +15,46 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+// Response interceptor
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        console.log('error',error);
+        if (error.response) {
+            // Check specifically for token-related errors
+            if (error.response.status === 401 && 
+                (error.response.data?.message === 'Invalid or expired token' || 
+                 error.response.data?.message === 'No token provided')) {
+                 // Logout using Zustand
+                //  useAuthStore.setState({ token: null });
+                // window.location.href = '/login';
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default api;
+
+export const addParking = async (data) => {
+    const response = await api.post("/parking", data);
+    return response.data;
+}   
+
+export const getParkings = async () => {
+    const response = await api.get("/parking");
+    return response.data;
+}
+export const getParkingById = async (id) => {
+    const response = await api.get(`/parking/${id}`);
+    return response.data;
+}
+export const updateParking = async (id, data) => {
+    const response = await api.put(`/parking/${id}`, data);
+    return response.data;
+}
+export const deleteParking = async (id) => {
+    const response = await api.delete(`/parking/${id}`);
+    return response.data;
+}
+

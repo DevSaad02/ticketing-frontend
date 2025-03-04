@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from "react";
 import { registerUser } from "../../api/auth";
 import { useAuthStore } from "../../store/AuthStore";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
@@ -16,8 +17,7 @@ const Register = () => {
         e.preventDefault();
         try {
             const data = await registerUser(formData);
-            console.log(data);
-            setToken(data.token); // Store JWT token
+            setToken(data.data.token); // Store JWT token
             navigate("/dashboard"); // Redirect to Dashboard
         } catch (error) {
             console.error("Registration failed", error);
@@ -26,9 +26,9 @@ const Register = () => {
     return (
         <div className="register-box">
             <div className="register-logo">
-                <a href="/register">
+                <Link to="/register">
                     <b>Ticketing</b>System
-                </a>
+                </Link>
             </div>
             <div className="card">
                 <div className="card-body register-card-body">

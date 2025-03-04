@@ -1,7 +1,30 @@
 import React from 'react'
+import { useState } from "react";
+import { loginUser } from "../../api/auth";
+import { useAuthStore } from "../../store/AuthStore";
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
+  const token = useAuthStore.getState().token;
+  console.log("Token being sent:", token);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const setToken = useAuthStore((state) => state.setToken);
+  const navigate = useNavigate();
+  const handleChange = (e) => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+          const data = await loginUser(formData);
+          setToken(data.data.token); // Store JWT token
+          navigate("/dashboard"); // Redirect to Dashboard
+      } catch (error) {
+          console.error("Login failed", error);
+      }
+  };
   return (
     <div className="login-box">
       <div className="login-logo">
@@ -13,9 +36,9 @@ const Login = () => {
       <div className="card">
         <div className="card-body login-card-body">
           <p className="login-box-msg">Sign in to start your session</p>
-          <form action="../../index3.html" method="post">
+          <form onSubmit={handleSubmit}>
             <div className="input-group mb-3">
-              <input type="email" className="form-control" placeholder="Email" />
+              <input type="email" className="form-control" placeholder="Email" name="email" onChange={handleChange} />
               <div className="input-group-append">
                 <div className="input-group-text">
                   <span className="fas fa-envelope" />
@@ -27,6 +50,8 @@ const Login = () => {
                 type="password"
                 className="form-control"
                 placeholder="Password"
+                name="password"
+                onChange={handleChange}
               />
               <div className="input-group-append">
                 <div className="input-group-text">

@@ -65,17 +65,17 @@ const Sidebar = () => {
                                 </li>
                                 <li className="nav-item">
                                     <a href="#" className="nav-link">
-                                        <i className="nav-icon fas fa-chart-pie" />
+                                        <i className="nav-icon fas fa-parking" />
                                         <p>
-                                            Charts
+                                            Parkings
                                             <i className="right fas fa-angle-left" />
                                         </p>
                                     </a>
                                     <ul className="nav nav-treeview">
                                         <li className="nav-item">
-                                            <Link to="/data" className="nav-link">
+                                            <Link to="/add-parking" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
-                                                <p>Data Table</p>
+                                                <p>Add Parking</p>
                                             </Link>
                                         </li>
                                     </ul>
