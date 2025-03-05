@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
+    const [isParkingMenuOpen, setIsParkingMenuOpen] = useState(false);
+
+    const toggleParkingMenu = (e) => {
+        e.preventDefault();
+        setIsParkingMenuOpen(!isParkingMenuOpen);
+    };
+
+    const [isBookingMenuOpen, setIsBookingMenuOpen] = useState(false);
+
+    const toggleBookingMenu = (e) => {
+        e.preventDefault();
+        setIsBookingMenuOpen(!isBookingMenuOpen);
+    };
+
     return (
         <>
             <>
@@ -63,19 +77,54 @@ const Sidebar = () => {
                                         </li>
                                     </ul>
                                 </li>
-                                <li className="nav-item">
-                                    <a href="#" className="nav-link">
+                                <li className={`nav-item ${isParkingMenuOpen ? 'menu-open' : ''}`}>
+                                    <a href="#" 
+                                       className={`nav-link ${isParkingMenuOpen ? 'active' : ''}`}
+                                       onClick={toggleParkingMenu}
+                                    >
                                         <i className="nav-icon fas fa-parking" />
                                         <p>
                                             Parkings
-                                            <i className="right fas fa-angle-left" />
+                                            <i className={`right fas fa-angle-${isParkingMenuOpen ? 'down' : 'left'}`} />
                                         </p>
                                     </a>
                                     <ul className="nav nav-treeview">
                                         <li className="nav-item">
+                                            <Link to="/parkings" className="nav-link">
+                                                <i className="far fa-circle nav-icon" />
+                                                <p>All Parkings</p>
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item">
                                             <Link to="/add-parking" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                                 <p>Add Parking</p>
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li className={`nav-item ${isBookingMenuOpen ? 'menu-open' : ''}`}>
+                                    <a href="#" 
+                                       className={`nav-link ${isBookingMenuOpen ? 'active' : ''}`}
+                                       onClick={toggleBookingMenu}
+                                    >
+                                        <i className="nav-icon fas fa-calendar-check" />
+                                        <p>
+                                            Bookings
+                                            <i className={`right fas fa-angle-${isBookingMenuOpen ? 'down' : 'left'}`} />
+                                        </p>
+                                    </a>
+                                    <ul className="nav nav-treeview">
+                                        <li className="nav-item">
+                                            <Link to="/bookings" className="nav-link">
+                                                <i className="far fa-circle nav-icon" />
+                                                <p>All Bookings</p>
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item">
+                                            <Link to="/add-booking" className="nav-link">
+                                            <i className="far fa-circle nav-icon" />
+                                                <p>Add Booking</p>
                                             </Link>
                                         </li>
                                     </ul>

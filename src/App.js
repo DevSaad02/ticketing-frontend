@@ -6,6 +6,8 @@ import DataTable from "./pages/table/DataTable";
 import Parkings from "./pages/parking/Parkings";
 import AddParking from "./pages/parking/AddParking";
 import EditParking from "./pages/parking/EditParking";
+import Bookings from "./pages/booking/Bookings";
+import AddBooking from "./pages/booking/AddBooking";
 import AuthLayout from "./layouts/AuthLayout";
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
         <Route path="/parkings" element={<Parkings />} />
         <Route path="/add-parking" element={<AddParking />} />
         <Route path="/edit-parking/:id" element={<EditParking />} />
+        <Route path="/bookings" element={<Bookings />} />
+        <Route path="/add-booking" element={<AddBooking />} />
       </Routes>
     </BrowserRouter>
   );

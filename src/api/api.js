@@ -58,3 +58,22 @@ export const deleteParking = async (id) => {
     return response.data;
 }
 
+export const getSlotsByParkingId = async (parkingId) => {
+    const response = await api.get(`/parking/${parkingId}/slots`);
+    return response.data;
+};
+
+export const addBooking = async (data) => {
+    const response = await api.post("/booking", data);
+    return response.data;
+}  
+
+export const getAvailableSlots = async (data) => {
+    const response = await api.post("/booking/available-slots", data);
+    console.log('response', response);
+    // return response.data;
+}
+export const cancelBooking = async (id) => {
+    const response = await api.put(`/booking/${id}/cancel`);
+    return response.data;
+}
