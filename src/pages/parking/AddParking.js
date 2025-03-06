@@ -6,10 +6,7 @@ import Footer from "../../includes/Footer";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { addParking } from "../../api/api";
-import { useAuthStore } from "../../store/AuthStore";
 const AddParking = () => {
-    const token = useAuthStore.getState().token;
-    console.log("Token being sent:", token);
     // State to manage form inputs
     const [formData, setFormData] = useState({
         place: "",
@@ -131,6 +128,9 @@ const AddParking = () => {
                                             <button type="submit" className="btn btn-primary">
                                                 Submit
                                             </button>
+                                            <Link to="/parkings" className="btn btn-secondary ml-2">
+                                                Back
+                                            </Link>
                                         </div>
                                     </form>
                                 </div>

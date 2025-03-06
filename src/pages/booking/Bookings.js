@@ -3,7 +3,7 @@ import Header from "../../includes/Header";
 import Sidebar from "../../includes/Sidebar";
 import Footer from "../../includes/Footer";
 import { Link } from "react-router-dom";
-import getBookings from "../../api/api";
+import { getBookings, cancelBooking } from "../../api/api";
 
 const Bookings = () => {
     const [bookings, setBookings] = useState([]);
@@ -11,14 +11,12 @@ const Bookings = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log(' fetchBookings function call');
         fetchBookings();
     }, []);
 
     const fetchBookings = async () => {
         try {
             const response = await getBookings();
-            console.log(response);
             if (response.status === 'success') {
                 setBookings(response.data);
             }
@@ -30,6 +28,15 @@ const Bookings = () => {
         }
     };
 
+    const handleCancelBooking = async (id) => {
+        try {
+            await cancelBooking(id);
+            fetchBookings(); // Refresh the bookings list after cancellation
+        } catch (error) {
+            console.error("Failed to cancel booking:", error);
+            setError("Failed to cancel booking");
+        }
+    };
 
     return (
         <>
@@ -91,13 +98,13 @@ const Bookings = () => {
                                                         <th>Phone</th>
                                                         <th>Date</th>
                                                         <th>Time</th>
-                                                        <th>action</th>
+                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {bookings.length === 0 ? (
                                                         <tr>
-                                                            <td colSpan="5" className="text-center">
+                                                            <td colSpan="8" className="text-center">
                                                                 No bookings found
                                                             </td>
                                                         </tr>
@@ -112,7 +119,16 @@ const Bookings = () => {
                                                                 <td>{booking.date}</td>
                                                                 <td>{booking.start_time} - {booking.end_time}</td>
                                                                 <td>
-                                                                   
+                                                                    {booking.status !== 'canceled' ? (
+                                                                        <button
+                                                                            className="btn btn-danger btn-sm"
+                                                                            onClick={() => handleCancelBooking(booking.id)}
+                                                                        >
+                                                                            Cancel
+                                                                        </button>
+                                                                    ) : (
+                                                                        <span>Canceled</span>
+                                                                    )}
                                                                 </td>
                                                             </tr>
                                                         ))
@@ -120,14 +136,14 @@ const Bookings = () => {
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                    <th>Owner</th>
+                                                        <th>Owner</th>
                                                         <th>Vehicle Name</th>
                                                         <th>Vehicle Type</th>
                                                         <th>Registration Number</th>
                                                         <th>Phone</th>
                                                         <th>Date</th>
                                                         <th>Time</th>
-                                                        <th>action</th>
+                                                        <th>Action</th>
                                                     </tr>
                                                 </tfoot>
                                             </table>

@@ -26,8 +26,8 @@ api.interceptors.response.use(
                 (error.response.data?.message === 'Invalid or expired token' || 
                  error.response.data?.message === 'No token provided')) {
                  // Logout using Zustand
-                //  useAuthStore.setState({ token: null });
-                // window.location.href = '/login';
+                 useAuthStore.setState({ token: null });
+                window.location.href = '/login';
             }
         }
         return Promise.reject(error);

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { addBooking, getParkings, getAvailableSlots } from "../../api/api";
-import { useAuthStore } from "../../store/AuthStore";
 import Header from "../../includes/Header";
 import Sidebar from "../../includes/Sidebar";
 import Footer from "../../includes/Footer";
 
 const AddBooking = () => {
-    const token = useAuthStore.getState().token;
     // State to manage form inputs
     const [formData, setFormData] = useState({
         slot_id: "",
@@ -446,6 +444,9 @@ const AddBooking = () => {
                                             <button type="submit" className="btn btn-primary">
                                                 Submit
                                             </button>
+                                            <Link to="/bookings" className="btn btn-secondary ml-2">
+                                                Back
+                                            </Link>
                                         </div>
                                     </form>
                                 </div>

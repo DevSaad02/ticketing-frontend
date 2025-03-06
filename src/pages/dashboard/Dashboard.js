@@ -2,13 +2,9 @@ import React, { useState, useEffect } from "react";
 import Header from "../../includes/Header";
 import Sidebar from "../../includes/Sidebar";
 import Footer from "../../includes/Footer";
-import { useAuthStore } from "../../store/AuthStore";
 import { getAnalytics } from "../../api/api";
 
 const Dashboard = () => {
-    const token = useAuthStore.getState().token;
-    console.log("Token being sent:", token);
-
     const [analytics, setAnalytics] = useState({
         total_parkings: 0,
         total_slots: 0,

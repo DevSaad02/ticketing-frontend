@@ -6,8 +6,6 @@ import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
-  const token = useAuthStore.getState().token;
-  console.log("Token being sent:", token);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const setToken = useAuthStore((state) => state.setToken);
   const navigate = useNavigate();
