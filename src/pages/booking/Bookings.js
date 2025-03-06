@@ -3,75 +3,33 @@ import Header from "../../includes/Header";
 import Sidebar from "../../includes/Sidebar";
 import Footer from "../../includes/Footer";
 import { Link } from "react-router-dom";
-import { getParkings, getSlotsByParkingId } from "../../api/api";
-import { deleteParking } from "../../api/api";
+import getBookings from "../../api/api";
 
-const Parkings = () => {
-    const [parkings, setParkings] = useState([]);
+const Bookings = () => {
+    const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [selectedParking, setSelectedParking] = useState(null);
-    const [slots, setSlots] = useState([]);
-    const [loadingSlots, setLoadingSlots] = useState(false);
 
     useEffect(() => {
-        fetchParkings();
+        console.log(' fetchBookings function call');
+        fetchBookings();
     }, []);
 
-    const fetchParkings = async () => {
+    const fetchBookings = async () => {
         try {
-            const response = await getParkings();
+            const response = await getBookings();
+            console.log(response);
             if (response.status === 'success') {
-                setParkings(response.data);
+                setBookings(response.data);
             }
             setLoading(false);
         } catch (error) {
-            console.error("Failed to fetch parkings:", error);
-            setError("Failed to load parkings");
+            console.error("Failed to fetch bookings:", error);
+            setError("Failed to load bookings");
             setLoading(false);
         }
     };
 
-    const handleDelete = async (id) => {
-        try {
-            const response = await deleteParking(id);
-            if (response.status === 'success') {
-                fetchParkings();
-            }
-        } catch (error) {
-            console.error("Failed to delete parking:", error);
-        }
-    };
-
-    const handleViewSlots = async (parking) => {
-        setSelectedParking(parking);
-        setShowModal(true);
-        setLoadingSlots(true);
-        try {
-            const response = await getSlotsByParkingId(parking.id);
-            if (response.status === 'success') {
-                setSlots(response.data);
-            }
-        } catch (error) {
-            console.error("Failed to fetch slots:", error);
-        } finally {
-            setLoadingSlots(false);
-        }
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setSelectedParking(null);
-        setSlots([]);
-    };
-
-    // Add click handler for backdrop
-    const handleBackdropClick = (e) => {
-        if (e.target.classList.contains('modal')) {
-            handleCloseModal();
-        }
-    };
 
     return (
         <>
@@ -84,14 +42,14 @@ const Parkings = () => {
                     <div className="container-fluid">
                         <div className="row mb-2">
                             <div className="col-sm-6">
-                                <h1>Parkings</h1>
+                                <h1>Bookings</h1>
                             </div>
                             <div className="col-sm-6">
                                 <ol className="breadcrumb float-sm-right">
                                     <li className="breadcrumb-item">
                                         <Link to="/dashboard">Dashboard</Link>
                                     </li>
-                                    <li className="breadcrumb-item active">Parkings</li>
+                                    <li className="breadcrumb-item active">Bookings</li>
                                 </ol>
                             </div>
                         </div>
@@ -106,10 +64,10 @@ const Parkings = () => {
                                 {/* /.card */}
                                 <div className="card">
                                     <div className="card-header">
-                                        <h3 className="card-title">Parkings List</h3>
+                                        <h3 className="card-title">Bookings List</h3>
                                         <div className="float-right">
-                                            <Link to="/add-parking" className="btn btn-primary">
-                                                Add New Parking
+                                            <Link to="/add-booking" className="btn btn-primary">
+                                                Add New Booking
                                             </Link>
                                         </div>
                                     </div>
@@ -126,46 +84,35 @@ const Parkings = () => {
                                             >
                                                 <thead>
                                                     <tr>
-                                                        <th>Place</th>
-                                                        <th>Vehicle</th>
-                                                        <th>Landmark</th>
-                                                        <th>Address</th>
-                                                        <th>Action</th>
+                                                        <th>Owner</th>
+                                                        <th>Vehicle Name</th>
+                                                        <th>Vehicle Type</th>
+                                                        <th>Registration Number</th>
+                                                        <th>Phone</th>
+                                                        <th>Date</th>
+                                                        <th>Time</th>
+                                                        <th>action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {parkings.length === 0 ? (
+                                                    {bookings.length === 0 ? (
                                                         <tr>
                                                             <td colSpan="5" className="text-center">
-                                                                No parkings found
+                                                                No bookings found
                                                             </td>
                                                         </tr>
                                                     ) : (
-                                                        parkings.map((parking) => (
-                                                            <tr key={parking.id}>
-                                                                <td>{parking.place}</td>
-                                                                <td>{parking.vehicle_type}</td>
-                                                                <td>{parking.landmark}</td>
-                                                                <td>{parking.address}</td>
+                                                        bookings.map((booking) => (
+                                                            <tr key={booking.id}>
+                                                                <td>{booking.vehicle_owner}</td>
+                                                                <td>{booking.vehicle_name}</td>
+                                                                <td>{booking.vehicle_type}</td>
+                                                                <td>{booking.vehicle_registration_number}</td>
+                                                                <td>{booking.contact_number}</td>
+                                                                <td>{booking.date}</td>
+                                                                <td>{booking.start_time} - {booking.end_time}</td>
                                                                 <td>
-                                                                    <button 
-                                                                        onClick={() => handleViewSlots(parking)}
-                                                                        className="btn btn-info btn-sm mr-1"
-                                                                    >
-                                                                        <i className="fas fa-eye"></i>
-                                                                    </button>
-                                                                    <Link 
-                                                                        to={`/edit-parking/${parking.id}`}
-                                                                        className="btn btn-warning btn-sm mr-1"
-                                                                    >
-                                                                        <i className="fas fa-edit"></i>
-                                                                    </Link>
-                                                                    <button 
-                                                                        className="btn btn-danger btn-sm"
-                                                                        onClick={() => handleDelete(parking.id)}
-                                                                    >
-                                                                        <i className="fas fa-trash"></i>
-                                                                    </button>
+                                                                   
                                                                 </td>
                                                             </tr>
                                                         ))
@@ -173,11 +120,14 @@ const Parkings = () => {
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <th>Place</th>
-                                                        <th>Vehicle</th>
-                                                        <th>Landmark</th>
-                                                        <th>Address</th>
-                                                        <th>Action</th>
+                                                    <th>Owner</th>
+                                                        <th>Vehicle Name</th>
+                                                        <th>Vehicle Type</th>
+                                                        <th>Registration Number</th>
+                                                        <th>Phone</th>
+                                                        <th>Date</th>
+                                                        <th>Time</th>
+                                                        <th>action</th>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -197,76 +147,9 @@ const Parkings = () => {
             </div>
             {/* /.content-wrapper */}
 
-            {/* Modal */}
-            {showModal && (
-                <>
-                    <div 
-                        className="modal fade show" 
-                        style={{ 
-                            display: 'block',
-                            backgroundColor: 'rgba(0,0,0,0.5)' // Semi-transparent backdrop
-                        }} 
-                        onClick={handleBackdropClick}
-                    >
-                        <div className="modal-dialog modal-lg">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">
-                                        Slots for {selectedParking?.place}
-                                    </h5>
-                                    <button 
-                                        type="button" 
-                                        className="close" 
-                                        onClick={handleCloseModal}
-                                        aria-label="Close"
-                                    >
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    {loadingSlots ? (
-                                        <div className="text-center">Loading slots...</div>
-                                    ) : (
-                                        <div className="row">
-                                            {slots.map((slot) => (
-                                                <div key={slot.id} className="col-md-3 mb-3">
-                                                    <div className={`card ${
-                                                        slot.status === 'available' 
-                                                            ? 'bg-success' 
-                                                            : 'bg-danger'
-                                                    }`}>
-                                                        <div className="card-body text-center text-white">
-                                                            <h5 className="card-title">
-                                                                Slot #{slot.system_id}
-                                                            </h5>
-                                                            <p className="card-text text-capitalize">
-                                                                {slot.status}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="modal-footer">
-                                    <button 
-                                        type="button" 
-                                        className="btn btn-secondary" 
-                                        onClick={handleCloseModal}
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            )}
-
             <Footer />
         </>
     )
 }
 
-export default Parkings;
+export default Bookings;

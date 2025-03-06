@@ -1,11 +1,40 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../includes/Header";
-import Sidebar from "../../includes/Sidebar"; 
+import Sidebar from "../../includes/Sidebar";
 import Footer from "../../includes/Footer";
 import { useAuthStore } from "../../store/AuthStore";
+import { getAnalytics } from "../../api/api";
+
 const Dashboard = () => {
     const token = useAuthStore.getState().token;
     console.log("Token being sent:", token);
+
+    const [analytics, setAnalytics] = useState({
+        total_parkings: 0,
+        total_slots: 0,
+        total_users: 0
+    });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Fetch analytics when component mounts
+    useEffect(() => {
+        fetchAnalytics();
+    }, []);
+
+    const fetchAnalytics = async () => {
+        try {
+            const response = await getAnalytics();
+            console.log(response);
+            setAnalytics(response);
+            setLoading(false);
+        } catch (error) {
+            console.error("Failed to fetch Analytics:", error);
+            setError("Failed to load Analytics");
+            setLoading(false);
+        }
+    };
+
     return (
         <>
             <Header />
@@ -41,15 +70,15 @@ const Dashboard = () => {
                         <div className="container-fluid">
                             {/* Small boxes (Stat box) */}
                             <div className="row">
-                                <div className="col-lg-3 col-6">
+                                <div className="col-md-4">
                                     {/* small box */}
                                     <div className="small-box bg-info">
                                         <div className="inner">
-                                            <h3>150</h3>
-                                            <p>New Orders</p>
+                                            <h3>{analytics.total_parkings}</h3>
+                                            <p>Total Parkings</p>
                                         </div>
                                         <div className="icon">
-                                            <i className="ion ion-bag" />
+                                            <i className="fas fa-car" />
                                         </div>
                                         <a href="#" className="small-box-footer">
                                             More info <i className="fas fa-arrow-circle-right" />
@@ -57,17 +86,15 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                                 {/* ./col */}
-                                <div className="col-lg-3 col-6">
+                                <div className="col-md-4">
                                     {/* small box */}
                                     <div className="small-box bg-success">
                                         <div className="inner">
-                                            <h3>
-                                                53<sup style={{ fontSize: 20 }}>%</sup>
-                                            </h3>
-                                            <p>Bounce Rate</p>
+                                            <h3>{analytics.total_slots}</h3>
+                                            <p>Total Slots</p>
                                         </div>
                                         <div className="icon">
-                                            <i className="ion ion-stats-bars" />
+                                            <i className="ion ion-grid" />
                                         </div>
                                         <a href="#" className="small-box-footer">
                                             More info <i className="fas fa-arrow-circle-right" />
@@ -75,31 +102,15 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                                 {/* ./col */}
-                                <div className="col-lg-3 col-6">
+                                <div className="col-md-4">
                                     {/* small box */}
                                     <div className="small-box bg-warning">
                                         <div className="inner">
-                                            <h3>44</h3>
-                                            <p>User Registrations</p>
+                                            <h3>{analytics.total_users}</h3>
+                                            <p>Total Users</p>
                                         </div>
                                         <div className="icon">
                                             <i className="ion ion-person-add" />
-                                        </div>
-                                        <a href="#" className="small-box-footer">
-                                            More info <i className="fas fa-arrow-circle-right" />
-                                        </a>
-                                    </div>
-                                </div>
-                                {/* ./col */}
-                                <div className="col-lg-3 col-6">
-                                    {/* small box */}
-                                    <div className="small-box bg-danger">
-                                        <div className="inner">
-                                            <h3>65</h3>
-                                            <p>Unique Visitors</p>
-                                        </div>
-                                        <div className="icon">
-                                            <i className="ion ion-pie-graph" />
                                         </div>
                                         <a href="#" className="small-box-footer">
                                             More info <i className="fas fa-arrow-circle-right" />
@@ -113,10 +124,10 @@ const Dashboard = () => {
                             <div className="row">
                                 {/* Left col */}
                                 <section className="col-lg-7 connectedSortable">
-                                   
+
                                 </section>
                                 {/* /.Left col */}
-                              
+
                             </div>
                             {/* /.row (main row) */}
                         </div>

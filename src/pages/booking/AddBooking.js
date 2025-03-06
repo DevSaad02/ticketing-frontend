@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addBooking, getParkings, getAvailableSlots } from "../../api/api";
 import { useAuthStore } from "../../store/AuthStore";
 import Header from "../../includes/Header";
@@ -9,11 +8,9 @@ import Footer from "../../includes/Footer";
 
 const AddBooking = () => {
     const token = useAuthStore.getState().token;
-    // console.log("Token being sent:", token);
     // State to manage form inputs
     const [formData, setFormData] = useState({
         slot_id: "",
-        vehicle_number: "",
         vehicle_type: "",
         vehicle_registration_number: "",
         vehicle_owner: "",
@@ -35,6 +32,7 @@ const AddBooking = () => {
     const [availableSlots, setAvailableSlots] = useState([]);
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [slotError, setSlotError] = useState(null);
+    const [timeError, setTimeError] = useState(null);
 
     // Fetch parkings when component mounts
     useEffect(() => {
@@ -57,7 +55,20 @@ const AddBooking = () => {
 
     // Handle form input changes
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        // Validate start time and end time
+        if (name === 'start_time' || name === 'end_time') {
+            const startTime = name === 'start_time' ? value : formData.start_time;
+            const endTime = name === 'end_time' ? value : formData.end_time;
+
+            if (startTime && endTime && startTime >= endTime) {
+                setTimeError("End time must be greater than start time.");
+            } else {
+                setTimeError(null);
+            }
+        }
     };
 
     // Modify handleChange to include slot selection
@@ -69,9 +80,17 @@ const AddBooking = () => {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSlotError(null);
+        setTimeError(null);
+
+        if (!selectedSlot) {
+            setSlotError("Please select a slot.");
+            return;
+        }
+
         try {
             await addBooking(formData); // Send data to API
-            // navigate("/bookings"); // Redirect to Bookings page after successful submission
+            navigate("/bookings"); // Redirect to Bookings page after successful submission
         } catch (error) {
             console.error("Booking addition failed", error);
         }
@@ -289,6 +308,7 @@ const AddBooking = () => {
                                                         name="vehicle_registration_number"
                                                         placeholder="Enter Registration Number"
                                                         onChange={handleChange}
+                                                        required
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
@@ -300,6 +320,7 @@ const AddBooking = () => {
                                                         name="vehicle_owner"
                                                         placeholder="Enter Owner Name"
                                                         onChange={handleChange}
+                                                        required
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
@@ -311,6 +332,7 @@ const AddBooking = () => {
                                                         name="contact_number"
                                                         placeholder="Enter Registration Number"
                                                         onChange={handleChange}
+                                                        required
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
@@ -322,6 +344,7 @@ const AddBooking = () => {
                                                         name="date"
                                                         placeholder="Enter Registration Number"
                                                         onChange={handleChange}
+                                                        required
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
@@ -333,6 +356,7 @@ const AddBooking = () => {
                                                         name="start_time"
                                                         placeholder="Enter Start Time"
                                                         onChange={handleChange}
+                                                        required
                                                     />
                                                 </div>
                                                 <div className="form-group col-md-6">
@@ -344,6 +368,7 @@ const AddBooking = () => {
                                                         name="end_time"
                                                         placeholder="Enter End Time"
                                                         onChange={handleChange}
+                                                        required
                                                     />
                                                 </div>
                                             </div>
@@ -390,12 +415,12 @@ const AddBooking = () => {
                                                                             <div
                                                                                 className={`slot-card ${selectedSlot?.id === slot.id
                                                                                         ? 'selected'
-                                                                                        : slot.status === 'available'
+                                                                                        : slot.slot_status === 'available'
                                                                                             ? 'available'
                                                                                             : 'occupied'
                                                                                     }`}
                                                                                 onClick={() => {
-                                                                                    if (slot.status === 'available') {
+                                                                                    if (slot.slot_status === 'available') {
                                                                                         handleSlotSelect(slot);
                                                                                     }
                                                                                 }}
@@ -403,7 +428,7 @@ const AddBooking = () => {
                                                                                 <div className="slot-content">
                                                                                     <i className="fas fa-car mb-2"></i>
                                                                                     <div className="slot-number">Slot #{slot.system_id}</div>
-                                                                                    <div className="slot-status">{slot.status}</div>
+                                                                                    <div className="slot-status">{slot.slot_status}</div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -414,6 +439,7 @@ const AddBooking = () => {
                                                     </div>
                                                 </div>
                                             </div>
+                                            {timeError && <div className="alert alert-danger">{timeError}</div>}
                                         </div>
                                         {/* /.card-body */}
                                         <div className="card-footer">
