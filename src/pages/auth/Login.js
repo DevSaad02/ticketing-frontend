@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const setToken = useAuthStore((state) => state.setToken);
+  const setRoleId = useAuthStore((state) => state.setRoleId);
   const navigate = useNavigate();
   const handleChange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,7 +18,9 @@ const Login = () => {
       e.preventDefault();
       try {
           const data = await loginUser(formData);
+          console.log('data.data.user.role_id',data.data.user.role_id)
           setToken(data.data.token); // Store JWT token
+          setRoleId(data.data.user.role_id); // Store role_id
           navigate("/dashboard"); // Redirect to Dashboard
       } catch (error) {
           console.error("Login failed", error);

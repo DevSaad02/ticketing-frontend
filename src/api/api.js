@@ -72,7 +72,6 @@ export const getSlotsByParkingId = async (parkingId) => {
 };
 // Get bookings
 export const getBookings = async () => {
-    console.log('here');
     const response = await api.get("/booking");
     return response.data;
 }  
@@ -89,6 +88,29 @@ export const getAvailableSlots = async (data) => {
 // Cancel booking
 export const cancelBooking = async (id) => {
     const response = await api.put(`/booking/${id}/cancel`);
+    return response.data;
+}
+// Add feedback
+export const addFeedback = async (data) => {
+    const response = await api.post("/feedback", data);
+    return response.data;
+}
+
+// Get feedback
+export const getFeedback = async () => {
+    const response = await api.get("/feedback");
+    return response.data;
+}
+
+// Get feedback
+export const getFeedbacks = async () => {
+    const response = await api.get("/feedback/admin");
+    return response.data;
+}
+
+// Add reply
+export const addReply = async (data) => {
+    const response = await api.post("/feedback/reply", data);
     return response.data;
 }
 

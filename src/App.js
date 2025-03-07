@@ -8,6 +8,8 @@ import AddParking from "./pages/parking/AddParking";
 import EditParking from "./pages/parking/EditParking";
 import Bookings from "./pages/booking/Bookings";
 import AddBooking from "./pages/booking/AddBooking";
+import Feedback from "./pages/feedback/Feedback";
+import Replies from "./pages/feedback/Replies";
 import AuthLayout from "./layouts/AuthLayout";
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
         <Route path="/edit-parking/:id" element={<EditParking />} />
         <Route path="/bookings" element={<Bookings />} />
         <Route path="/add-booking" element={<AddBooking />} />
+        <Route path="/feedback" element={<Feedback />} />
+        <Route path="/replies" element={<Replies />} />
       </Routes>
     </BrowserRouter>
   );

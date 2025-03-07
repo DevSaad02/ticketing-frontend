@@ -21,7 +21,6 @@ const Dashboard = () => {
     const fetchAnalytics = async () => {
         try {
             const response = await getAnalytics();
-            console.log(response);
             setAnalytics(response);
             setLoading(false);
         } catch (error) {

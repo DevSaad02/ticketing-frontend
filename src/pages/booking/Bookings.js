@@ -4,8 +4,10 @@ import Sidebar from "../../includes/Sidebar";
 import Footer from "../../includes/Footer";
 import { Link } from "react-router-dom";
 import { getBookings, cancelBooking } from "../../api/api";
+import { useAuthStore } from "../../store/AuthStore";
 
 const Bookings = () => {
+    const role_id = parseInt(useAuthStore((state) => state.role_id), 10);
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -72,11 +74,14 @@ const Bookings = () => {
                                 <div className="card">
                                     <div className="card-header">
                                         <h3 className="card-title">Bookings List</h3>
+                    {role_id === 2 && (
+
                                         <div className="float-right">
                                             <Link to="/add-booking" className="btn btn-primary">
                                                 Add New Booking
                                             </Link>
                                         </div>
+                    )}
                                     </div>
                                     {/* /.card-header */}
                                     <div className="card-body">
